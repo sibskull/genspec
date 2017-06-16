@@ -26,7 +26,7 @@ out, err = p.communicate()
 maintainer = out.rstrip().decode()
 
 m = os.getenv('GENSPEC_PACKAGER')
-if m != None:
+if m is not None:
     maintainer = m
 
 spec_prefixes = {  'python': 'python-module-',
@@ -35,7 +35,7 @@ spec_prefixes = {  'python': 'python-module-',
 
 class Spec:
     """RPM Spec class"""
-    def __init__(self):
+    def __init__(self, tag):
         """Constructor"""
         self.module  = "" 
         self.package = ""
@@ -50,6 +50,12 @@ class Spec:
                         stamp       = "",
                         lastchange  = "" )
         self.spec = ""
+        if tag is None or tag == '':
+            self.build_place = '.'
+        elif tag.startswith('v'):
+            self.build_place = 'v@version@'
+        else:
+            self.build_place = '@version@'
 
     def apply(self, spectype):
         """Apply values to spec template"""
@@ -85,10 +91,11 @@ class Spec:
         
         # Create gear rules
         os.mkdir( '.gear' )
+
         if self.package != self.keys['module']:
-                gear_rules = "tar: . name=" + self.keys['module'] + "-@version@ base=" + self.keys['module'] + "-@version@"
+                gear_rules = "tar: {0} name={1}-@version@ base={1}-@version@".format(self.build_place, self.keys['module'])
         else:
-                gear_rules = "tar: ."
+                gear_rules = "tar: {}".format(self.build_place)
         f = open( '.gear/rules', 'w' )
         f.write( gear_rules )
         f.close()
@@ -98,9 +105,6 @@ class Spec:
         f.write( self.spec )
         f.close()
             
-# ======================================================================================================
-spec = Spec()
-                
 # Read command-line parameters
 parser = argparse.ArgumentParser(
     description='Script to generate RPM spec file based on template',
@@ -121,9 +125,13 @@ parser.add_argument('-l', action='store', dest='license', help='Package license'
 parser.add_argument('-u', action='store', dest='url', help='Package URL')
 parser.add_argument('-d', action='store', dest='description', help='Package description')
 parser.add_argument('-c', action='store', dest='lastchange', help='Package changelog')
+parser.add_argument('--tag', action='store', dest='tag', help='Git tag (uses in .gear/rules)')
 
 # Fill values...
 args = parser.parse_args()
+
+# ======================================================================================================
+spec = Spec(args.tag)
 
 def get_available_types():
     available_types = []
