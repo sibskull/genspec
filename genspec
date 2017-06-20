@@ -6,6 +6,7 @@
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of GNU General Public License (GPL) version 3 or later.
 from string import Template
+from subprocess import call
 import os
 import sys
 import datetime
@@ -35,8 +36,10 @@ spec_prefixes = {  'python': 'python-module-',
 
 class Spec:
     """RPM Spec class"""
-    def __init__(self, tag=''):
+    def __init__(self, tag='', use_git=False):
         """Constructor"""
+        self.use_git = use_git
+
         self.tag = tag
         if not tag:
             self.build_place = '.'
@@ -88,6 +91,9 @@ class Spec:
         
         # Create directory
         if os.path.basename(os.getcwd()) != self.package:
+            if self.use_git:
+                self.__gitClone()
+            else:
                 os.mkdir( self.package )
                 os.chdir( self.package )
         
@@ -106,6 +112,17 @@ class Spec:
         f = open( self.package + '.spec', 'w' )
         f.write( self.spec )
         f.close()
+
+    def __gitClone(self):
+        call(["git", "clone", self.keys['url'], self.package])
+        os.chdir( self.package )
+        if self.tag:
+            call("git reset --hard " + self.tag, shell=True)
+        else:
+            call("git reset --hard `git describe --abbrev=0 --tags`", shell=True)
+        call(["git", "checkout", "-b", "sisyphus"])
+        call(["git", "rm", "-rfq", "*"])
+        call(["git", "commit", "-m", "Create empty branch"])
             
 # Read command-line parameters
 parser = argparse.ArgumentParser(
@@ -127,13 +144,17 @@ parser.add_argument('-l', action='store', dest='license', help='Package license'
 parser.add_argument('-u', action='store', dest='url', help='Package URL')
 parser.add_argument('-d', action='store', dest='description', help='Package description')
 parser.add_argument('-c', action='store', dest='lastchange', help='Package changelog')
-parser.add_argument('--tag', action='store', dest='tag', help='Git tag (uses in .gear/rules)')
+parser.add_argument('--tag', action='store', help='Git tag (uses in .gear/rules)')
+parser.add_argument('--git', action='store_true', help='Git clone from url')
 
 # Fill values...
 args = parser.parse_args()
+# print(args.git)
+# print(args.tag)
+# exit()
 
 # ======================================================================================================
-spec = Spec(args.tag)
+spec = Spec(args.tag, args.git)
 
 def get_available_types():
     available_types = []
