@@ -35,8 +35,16 @@ spec_prefixes = {  'python': 'python-module-',
 
 class Spec:
     """RPM Spec class"""
-    def __init__(self, tag):
+    def __init__(self, tag=''):
         """Constructor"""
+        self.tag = tag
+        if not tag:
+            self.build_place = '.'
+        elif tag.startswith('v'):
+            self.build_place = 'v@version@'
+        else:
+            self.build_place = '@version@'
+
         self.module  = "" 
         self.package = ""
         self.keys = dict( spec_type = "",
@@ -50,12 +58,6 @@ class Spec:
                         stamp       = "",
                         lastchange  = "" )
         self.spec = ""
-        if tag is None or tag == '':
-            self.build_place = '.'
-        elif tag.startswith('v'):
-            self.build_place = 'v@version@'
-        else:
-            self.build_place = '@version@'
 
     def apply(self, spectype):
         """Apply values to spec template"""
