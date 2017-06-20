@@ -113,8 +113,10 @@ class Spec:
         f.write( self.spec )
         f.close()
 
+        self.__gearPost()
+
     def __gitClone(self):
-        call(["git", "clone", self.keys['url'], self.package])
+        call(["git", "clone", "-o", "upstream", self.keys['url'], self.package])
         os.chdir( self.package )
         if self.tag:
             call("git reset --hard " + self.tag, shell=True)
@@ -123,7 +125,12 @@ class Spec:
         call(["git", "checkout", "-b", "sisyphus"])
         call(["git", "rm", "-rfq", "*"])
         call(["git", "commit", "-m", "Create empty branch"])
-            
+
+    def __gearPost(self):
+        call(["gear-update-tag", "-a"])
+        call("gear-remotes-save")
+        call(["git", "add", "."])
+
 # Read command-line parameters
 parser = argparse.ArgumentParser(
     description='Script to generate RPM spec file based on template',
