@@ -152,7 +152,7 @@ parser.add_argument('-u', action='store', dest='url', help='Package URL')
 parser.add_argument('-d', action='store', dest='description', help='Package description')
 parser.add_argument('-c', action='store', dest='lastchange', help='Package changelog')
 parser.add_argument('--tag', action='store', help='Git tag (uses in .gear/rules)')
-parser.add_argument('--git', action='store_true', help='Git clone from url')
+parser.add_argument('--git', action='store_true', help='Git clone from url, clear repo and configure remotes update')
 
 # Fill values...
 args = parser.parse_args()
