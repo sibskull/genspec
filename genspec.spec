@@ -12,6 +12,8 @@ BuildArch: noarch
 
 BuildPrereq: rpm-build-python3
 
+Requires: git-core gear perl-Gear-Remotes
+
 Source:   %name-%version.tar
 
 %description
@@ -32,7 +34,8 @@ cp -av spectemplates/* %buildroot%_datadir/spectemplates/
 %changelog
 * Tue Jun 20 2017 Gordeev Mikhail <obirvalger@altlinux.org> 1.2.4-alt1
 - Add git command line option to clone from url, clear repo and configure
-  gear remotes update
+  gear remotes update (currently doesn't handle git error: no internet
+  connection and not configured git)
 
 * Mon Jun 19 2017 Gordeev Mikhail <obirvalger@altlinux.org> 1.2.2-alt1
 - Add tag command line option (uses in .gear/rules)
