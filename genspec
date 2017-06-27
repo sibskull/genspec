@@ -2,6 +2,7 @@
 
 # Script to generate RPM spec file based on template
 # (c) 2014,2017 Andrey Cherepanov <cas@altlinux.org>
+# (c) 2017 Mikhail Gordeev <obirvalger@altlinux.org>
 
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of GNU General Public License (GPL) version 3 or later.
