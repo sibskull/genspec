@@ -33,7 +33,7 @@ cp -av spectemplates/* %buildroot%_datadir/spectemplates/
 
 %changelog
 * Tue Jun 27 2017 Gordeev Mikhail <obirvalger@altlinux.org> 1.2.5-alt1
-- Fix #33596: wrong syntax for building from tag
+- (ALT #33596): wrong syntax for building from tag
 
 * Tue Jun 20 2017 Gordeev Mikhail <obirvalger@altlinux.org> 1.2.4-alt1
 - Add git command line option to clone from url, clear repo and configure
