@@ -1,5 +1,5 @@
 Name:     genspec
-Version:  1.2.5
+Version:  1.2.6
 Release:  alt1
 
 Summary:  Script for generation RPM spec file from template
@@ -32,6 +32,9 @@ cp -av spectemplates/* %buildroot%_datadir/spectemplates/
 %_datadir/spectemplates
 
 %changelog
+* Wed Jun 28 2017 Mikhail Gordeev <obirvalger@altlinux.org> 1.2.6-alt1
+- Create python3 spectemplate
+
 * Tue Jun 27 2017 Gordeev Mikhail <obirvalger@altlinux.org> 1.2.5-alt1
 - (ALT #33596): wrong syntax for building from tag
 
