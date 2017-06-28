@@ -32,7 +32,9 @@ if m is not None:
     maintainer = m
 
 spec_prefixes = {  'python': 'python-module-',
+                   'python3': 'python3-module-',
                    'ruby': 'ruby-',
+                   'vim': 'vim-plugin-',
                 }
 
 class Spec:
