@@ -117,7 +117,8 @@ class Spec:
         f.write( self.spec )
         f.close()
 
-        self.__gearPost()
+        if self.use_git:
+            self.__gearPost()
 
     def __gitClone(self):
         call(["git", "clone", "-o", "upstream", self.keys['url'], self.package])
