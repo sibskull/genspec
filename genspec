@@ -7,7 +7,7 @@
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of GNU General Public License (GPL) version 3 or later.
 from string import Template
-from subprocess import call
+from functools import partial
 import os
 import sys
 import datetime
@@ -16,6 +16,7 @@ import subprocess
 import re
 
 templates_path = "/usr/share/spectemplates/"
+null_call = partial(subprocess.call, stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
 
 # Get templates path and build list of available templates
 t = os.getenv('GENSPEC_TEMPLATES')
@@ -121,20 +122,20 @@ class Spec:
             self.__gearPost()
 
     def __gitClone(self):
-        call(["git", "clone", "-o", "upstream", self.keys['url'], self.package])
+        null_call(["git", "clone", "-o", "upstream", self.keys['url'], self.package])
         os.chdir( self.package )
         if self.tag:
-            call("git reset --hard " + self.tag, shell=True)
+            null_call("git reset --hard " + self.tag, shell=True)
         else:
-            call("git reset --hard `git describe --abbrev=0 --tags`", shell=True)
-        call(["git", "checkout", "-b", "sisyphus"])
-        call(["git", "rm", "-rfq", "*"])
-        call(["git", "commit", "-m", "Create empty branch"])
+            null_call("git reset --hard `git describe --abbrev=0 --tags`", shell=True)
+        null_call(["git", "checkout", "-b", "sisyphus"])
+        null_call(["git", "rm", "-rfq", "*"])
+        null_call(["git", "commit", "-m", "Create empty branch"])
 
     def __gearPost(self):
-        call(["gear-update-tag", "-a"])
-        call("gear-remotes-save")
-        call(["git", "add", "."])
+        null_call(["gear-update-tag", "-a"])
+        null_call("gear-remotes-save")
+        null_call(["git", "add", "."])
 
 # Read command-line parameters
 parser = argparse.ArgumentParser(
