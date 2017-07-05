@@ -14,6 +14,7 @@ import datetime
 import argparse
 import subprocess
 import re
+import tempfile
 
 templates_path = "/usr/share/spectemplates/"
 null_call = partial(subprocess.call, stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
@@ -121,6 +122,14 @@ class Spec:
         if self.use_git:
             self.__gearPost()
 
+    def test(self, original):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            olddir = os.getcwd()
+            os.chdir(tmpdir)
+            self.deploy()
+            os.chdir(olddir)
+            exit(subprocess.call(['diff', '-rq', '-x', '.git', os.path.join(tmpdir, self.package), original]))
+
     def __gitClone(self):
         null_call(["git", "clone", "-o", "upstream", self.keys['url'], self.package])
         os.chdir( self.package )
@@ -159,11 +168,13 @@ parser.add_argument('-d', action='store', dest='description', help='Package desc
 parser.add_argument('-c', action='store', dest='lastchange', help='Package changelog')
 parser.add_argument('--tag', action='store', help='Git tag (uses in .gear/rules)')
 parser.add_argument('--git', action='store_true', help='Git clone from url, clear repo and configure remotes update')
+parser.add_argument('--test', action='store', dest='original', help='Run in test mode to compare result with original dir')
 
 # Fill values...
 args = parser.parse_args()
 # print(args.git)
 # print(args.tag)
+# print(args.original)
 # exit()
 
 # ======================================================================================================
@@ -206,4 +217,7 @@ else:
     spec.keys = args.__dict__
 
 # Prepare place
-spec.deploy()
+if args.original is None:
+    spec.deploy()
+else:
+    spec.test(args.original)
