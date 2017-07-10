@@ -42,8 +42,12 @@ spec_prefixes = {  'python': 'python-module-',
 
 class Spec:
     """RPM Spec class"""
-    def __init__(self, tag='', use_git=False):
+    def __init__(self, tag='', use_git=False, date=None):
         """Constructor"""
+        if date is None:
+            self.date = datetime.datetime.now()
+        else:
+            self.date = date
         self.use_git = use_git
 
         self.tag = tag
@@ -82,7 +86,7 @@ class Spec:
 
         # Generate changelog entry
         self.keys['stamp'] = '* ' \
-          + datetime.datetime.now().strftime("%a %b %d %Y") \
+          + self.date.strftime("%a %b %d %Y") \
           + ' ' + self.keys['packager'] \
           + ' ' + self.keys['version']
         
@@ -169,6 +173,7 @@ parser.add_argument('-c', action='store', dest='lastchange', help='Package chang
 parser.add_argument('--tag', action='store', help='Git tag (uses in .gear/rules)')
 parser.add_argument('--git', action='store_true', help='Git clone from url, clear repo and configure remotes update')
 parser.add_argument('--test', action='store', dest='original', help='Run in test mode to compare result with original dir')
+parser.add_argument('--date', type=lambda d: datetime.datetime.strptime(d, '%Y-%m-%d'), help='Pass date to changelog in format YYYY-MM-DD')
 
 # Fill values...
 args = parser.parse_args()
@@ -178,7 +183,7 @@ args = parser.parse_args()
 # exit()
 
 # ======================================================================================================
-spec = Spec(args.tag, args.git)
+spec = Spec(args.tag, args.git, args.date)
 
 def get_available_types():
     available_types = []
