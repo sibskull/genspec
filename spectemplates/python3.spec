@@ -31,8 +31,8 @@ $description
 %python3_install
 
 %files
-%python3_sitelibdir_noarch/%modulename/
-%python3_sitelibdir_noarch/*.egg-info
+%python3_sitelibdir/%modulename/
+%python3_sitelibdir/*.egg-info
 
 %changelog
 $stamp-alt1
