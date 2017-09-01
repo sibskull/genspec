@@ -34,6 +34,10 @@ m = os.getenv('GENSPEC_PACKAGER')
 if m is not None:
     maintainer = m
 
+if maintainer == '%{packager}':
+    print('No packager privided not by rpm nor by GENSPEC_PACKAGER')
+    exit(1)
+
 spec_prefixes = {  'python': 'python-module-',
                    'python2': 'python-module-',
                    'python3': 'python3-module-',
