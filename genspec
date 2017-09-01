@@ -59,7 +59,7 @@ class Spec:
         else:
             self.build_place = '@version@:.'
 
-        self.module  = "" 
+        self.module  = ""
         self.package = ""
         self.keys = dict( spec_type = "",
                         module  = "",
@@ -76,9 +76,9 @@ class Spec:
     def apply(self, spectype):
         """Apply values to spec template"""
         self.keys['packager'] = maintainer
-        
+
         file = open( templates_path + spectype + ".spec", "r" )
-        
+
         # Generate package name
         if spectype in spec_prefixes:
                 self.package = spec_prefixes[ spectype ] + self.keys['module']
@@ -90,16 +90,16 @@ class Spec:
           + self.date.strftime("%a %b %d %Y") \
           + ' ' + self.keys['packager'] \
           + ' ' + self.keys['version']
-        
+
         # Fill template
         self.spec = file.read()
         file.close()
         self.spec = Template( self.spec ).safe_substitute( self.keys )
-            
+
     def deploy(self):
         """Generate directory with spec and gear rules"""
         self.apply( self.keys['spec_type'] )
-        
+
         # Create directory
         if os.path.basename(os.getcwd()) != self.package:
             if self.use_git:
@@ -107,7 +107,7 @@ class Spec:
             else:
                 os.mkdir( self.package )
                 os.chdir( self.package )
-        
+
         # Create gear rules
         os.mkdir( '.gear' )
 
@@ -118,7 +118,7 @@ class Spec:
         f = open( '.gear/rules', 'w' )
         f.write( gear_rules )
         f.close()
-        
+
         # Save spec file
         f = open( self.package + '.spec', 'w' )
         f.write( self.spec )
@@ -219,7 +219,7 @@ if len(sys.argv) < 2:
     read_dict['url']         = input_with_check('Package URL: ')
     read_dict['description'] = input_with_check('Package description: ')
     read_dict['lastchange']  = input_with_check('Package changelog: ')
-    
+
     spec.keys = read_dict
 else:
     spec.keys = args.__dict__
