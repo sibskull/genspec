@@ -112,9 +112,9 @@ class Spec:
         os.mkdir( '.gear' )
 
         if self.package != self.keys['module']:
-                gear_rules = "tar: {0} name={1}-@version@ base={1}-@version@".format(self.build_place, self.keys['module'])
+                gear_rules = "tar: {0} name={1}-@version@ base={1}-@version@\n".format(self.build_place, self.keys['module'])
         else:
-                gear_rules = "tar: {}".format(self.build_place)
+                gear_rules = "tar: {}\n".format(self.build_place)
         f = open( '.gear/rules', 'w' )
         f.write( gear_rules )
         f.close()
